@@ -19,23 +19,51 @@ def get_current_guess(secret_word, letters_guessed):
     return current_guess
 
 #loops through the first game
-def first_game(secret_word):
+def first_game(secret_word = "Emmanuel"):
+    secret_word = secret_word.lower()
     letters_guessed = []
-    guesses_remaining = 11
+    guesses_remaining = 5
+    previous_guess = "_" * len(secret_word)
 
     print("The secret word has " + str(len(secret_word)) + " characters.")
     print("You have " + str(guesses_remaining) + " guesses.")
 
     while guesses_remaining > 0:
-        letters_guessed.append(input("Guess a character in the secret word: "))
-        print("The partially guessed word is " + get_current_guess(secret_word, letters_guessed))
+        letters_guessed.append(input("Guess a character in the secret word: ").lower())
+        current_guess = get_current_guess(secret_word, letters_guessed)
+        print("The partially guessed word is", current_guess)
 
         if is_secret_guessed(secret_word, letters_guessed) == True:
             print("It's a win!")
             break
         else:
-            guesses_remaining -= 1
-            print("You have " + str(guesses_remaining) + " guesses remaining")
+            if current_guess == previous_guess:
+                guesses_remaining -= 1
+                print("You have " + str(guesses_remaining) + " guesses remaining")
+                
+        previous_guess = current_guess
+    else:
+        print("The word was", secret_word)
 
-secret_word = "emmanuel"
-first_game(secret_word)
+#loads file and puts words into list
+def load_words(file_name):
+    file = open(file_name, "r")
+    words = []
+    
+    for word in file:
+        words.append(word)
+
+    return (words, len(words))
+
+#chooses a random word from list
+def choose_secret_word():
+    import random
+    words = load_words("words.txt")
+    return words[0][random.randint(0, words[1] - 1)]
+
+#loads first game but with random word
+def second_game():
+    first_game(choose_secret_word())
+
+first_game()
+second_game()
