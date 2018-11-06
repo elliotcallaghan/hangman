@@ -31,10 +31,9 @@ def first_game(secret_word):
     global results
     global losses
     print(secret_word)
-    secret_word = secret_word.strip()
-    secret_word = secret_word.lower()
+    secret_word = secret_word.strip().lower()
     letters_guessed = []
-    guesses_remaining = 5
+    guesses_remaining = 10
     previous_guess = "_" * len(secret_word)
 
     print("The secret word has " + str(len(secret_word)) + " characters.")
@@ -60,7 +59,7 @@ def first_game(secret_word):
         previous_guess = current_guess
     else:
         print("The word was", secret_word)
-        if(secret_word!=previous_guess):
+        if(secret_word != previous_guess):
             losses += 1
             results[1][1] = losses
         
@@ -85,10 +84,9 @@ def second_game():
     global num_games
     quit = input("Press c to continue or q to quit: ")
     if (quit.lower() == "q"):
-        res, av=game_stats(num_games)
+        res, av = game_stats(num_games)
         return (res, av)
     elif (quit.lower() == "c"):
-        
         num_games += 1
         first_game(choose_secret_word())
         second_game()
