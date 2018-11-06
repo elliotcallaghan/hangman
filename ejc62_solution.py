@@ -1,3 +1,10 @@
+import random
+
+num_games = 1
+wins = 0
+losses = 0
+results = [["Wins: ", "0"], ["Losses: ", "0"]]
+
 #compares letters_guessed to secret_word
 def is_secret_guessed(secret_word, letters_guessed):
     for letter in range(len(secret_word)):
@@ -19,7 +26,12 @@ def get_current_guess(secret_word, letters_guessed):
     return current_guess
 
 #loops through the first game
-def first_game(secret_word = "Emmanuel"):
+def first_game(secret_word):
+    global wins
+    global results
+    global losses
+    print(secret_word)
+    secret_word = secret_word.strip()
     secret_word = secret_word.lower()
     letters_guessed = []
     guesses_remaining = 5
@@ -35,7 +47,11 @@ def first_game(secret_word = "Emmanuel"):
 
         if is_secret_guessed(secret_word, letters_guessed) == True:
             print("It's a win!")
-            break
+            
+            wins += 1
+            results[0][1] = wins
+            
+            guesses_remaining = 0
         else:
             if current_guess == previous_guess:
                 guesses_remaining -= 1
@@ -44,6 +60,10 @@ def first_game(secret_word = "Emmanuel"):
         previous_guess = current_guess
     else:
         print("The word was", secret_word)
+        if(secret_word!=previous_guess):
+            losses += 1
+            results[1][1] = losses
+        
 
 #loads file and puts words into list
 def load_words(file_name):
@@ -57,13 +77,30 @@ def load_words(file_name):
 
 #chooses a random word from list
 def choose_secret_word():
-    import random
     words = load_words("words.txt")
     return words[0][random.randint(0, words[1] - 1)]
 
 #loads first game but with random word
 def second_game():
-    first_game(choose_secret_word())
+    global num_games
+    quit = input("Press c to continue or q to quit: ")
+    if (quit.lower() == "q"):
+        res, av=game_stats(num_games)
+        return (res, av)
+    elif (quit.lower() == "c"):
+        
+        num_games += 1
+        first_game(choose_secret_word())
+        second_game()
+    else:
+        second_game()
 
-first_game()
+def game_stats(num_games):
+    global results
+    global wins
+    global losses
+    average = "The average win percentage is " + str(float(wins / num_games) * 100) + "%"
+    return (results, average)
+
+first_game("Emmanuel")
 second_game()
