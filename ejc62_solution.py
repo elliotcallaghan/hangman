@@ -3,7 +3,6 @@ import random
 num_games = 1
 wins = 0
 losses = 0
-results = [["Wins: ", "0"], ["Losses: ", "0"]]
 
 #compares letters_guessed to secret_word
 def is_secret_guessed(secret_word, letters_guessed):
@@ -28,9 +27,7 @@ def get_current_guess(secret_word, letters_guessed):
 #loops through the first game
 def first_game(secret_word):
     global wins
-    global results
     global losses
-    print(secret_word)
     secret_word = secret_word.strip().lower()
     letters_guessed = []
     guesses_remaining = 10
@@ -40,16 +37,20 @@ def first_game(secret_word):
     print("You have " + str(guesses_remaining) + " guesses.")
 
     while guesses_remaining > 0:
-        letters_guessed.append(input("Guess a character in the secret word: ").lower())
+        while True:
+            letter = input("Guess a character in the secret word: ").lower()
+            if letter.isalpha() and len(letter) == 1:
+                break
+            else:
+                print("Input must be one letter")
+
+        letters_guessed.append(letter)
         current_guess = get_current_guess(secret_word, letters_guessed)
         print("The partially guessed word is", current_guess)
 
         if is_secret_guessed(secret_word, letters_guessed) == True:
             print("It's a win!")
-            
             wins += 1
-            results[0][1] = wins
-            
             guesses_remaining = 0
         else:
             if current_guess == previous_guess:
@@ -59,9 +60,8 @@ def first_game(secret_word):
         previous_guess = current_guess
     else:
         print("The word was", secret_word)
-        if(secret_word != previous_guess):
+        if secret_word != previous_guess:
             losses += 1
-            results[1][1] = losses
         
 
 #loads file and puts words into list
@@ -82,23 +82,21 @@ def choose_secret_word():
 #loads first game but with random word
 def second_game():
     global num_games
-    quit = input("Press c to continue or q to quit: ")
-    if (quit.lower() == "q"):
-        res, av = game_stats(num_games)
-        return (res, av)
-    elif (quit.lower() == "c"):
+    quit = input("Press c to continue or q to quit: ").lower()
+    if (quit == "q"):
+        stats = game_stats(num_games)
+        print("Wins: " + str(stats[0]) + "\nLosses: " + str(stats[1]) + "\n" + stats[2])
+    elif (quit == "c"):
         num_games += 1
         first_game(choose_secret_word())
         second_game()
     else:
         second_game()
 
+#takes in number of games and returns win/loss frequencies and average
 def game_stats(num_games):
-    global results
-    global wins
-    global losses
     average = "The average win percentage is " + str(float(wins / num_games) * 100) + "%"
-    return (results, average)
+    return (wins, losses, average)
 
 first_game("Emmanuel")
 second_game()
