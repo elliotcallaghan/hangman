@@ -1,5 +1,7 @@
 import random
+import sys
 
+#global variables used in game_stats function
 num_games = 1
 wins = 0
 losses = 0
@@ -36,6 +38,7 @@ def first_game(secret_word):
     print("The secret word has " + str(len(secret_word)) + " characters.")
     print("You have " + str(guesses_remaining) + " guesses.")
 
+    #ensures there are a finite number of guesses
     while guesses_remaining > 0:
         while True:
             letter = input("Guess a character in the secret word: ").lower()
@@ -56,23 +59,28 @@ def first_game(secret_word):
             if current_guess == previous_guess:
                 guesses_remaining -= 1
                 print("You have " + str(guesses_remaining) + " guesses remaining")
-                
+
         previous_guess = current_guess
     else:
         print("The word was", secret_word)
         if secret_word != previous_guess:
             losses += 1
-        
+
 
 #loads file and puts words into list
 def load_words(file_name):
-    file = open(file_name, "r")
-    words = []
-    
-    for word in file:
-        words.append(word)
-
-    return (words, len(words))
+    #checking that the file exists
+    try:
+        file = open(file_name, "r")
+    except:
+        print("Please download the text file 'words.txt' to continue playing hangman.")
+        #program terminates if the file does not exist
+        sys.exit()
+    else:
+        words = []
+        for word in file:
+            words.append(word)
+        return (words, len(words))
 
 #chooses a random word from list
 def choose_secret_word():
@@ -82,6 +90,7 @@ def choose_secret_word():
 #loads first game but with random word
 def second_game():
     global num_games
+    #allows user to continue or quit
     quit = input("Press c to continue or q to quit: ").lower()
     if (quit == "q"):
         stats = game_stats(num_games)
@@ -91,6 +100,7 @@ def second_game():
         first_game(choose_secret_word())
         second_game()
     else:
+        #if user does not choose 'c' or 'q' then this function will be called again to ask the same question
         second_game()
 
 #takes in number of games and returns win/loss frequencies and average
@@ -98,5 +108,6 @@ def game_stats(num_games):
     average = "The average win percentage is " + str(float(wins / num_games) * 100) + "%"
     return (wins, losses, average)
 
+#starts the first game with the word being 'Emmanuel'
 first_game("Emmanuel")
 second_game()
