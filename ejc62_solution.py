@@ -52,9 +52,9 @@ def first_game(secret_word):
         print("The partially guessed word is", current_guess)
 
         if is_secret_guessed(secret_word, letters_guessed) == True:
-            print("It's a win!")
             wins += 1
             guesses_remaining = 0
+            print("It's a win!")
         else:
             if current_guess == previous_guess:
                 guesses_remaining -= 1
@@ -65,6 +65,7 @@ def first_game(secret_word):
         print("The word was", secret_word)
         if secret_word != previous_guess:
             losses += 1
+            print ("It's a loss")
 
 
 #loads file and puts words into list
