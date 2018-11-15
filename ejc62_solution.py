@@ -73,7 +73,7 @@ def load_words(file_name):
     try:
         file = open(file_name, "r")
     except:
-        print("Please download the text file 'words.txt' to continue playing hangman.")
+        print("Please download the text file 'words.txt' and store in same location as the python file to continue playing hangman.")
         #program terminates if the file does not exist
         sys.exit()
     else:
